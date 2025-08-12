@@ -40,6 +40,7 @@ public class CalculateSales {
 
 
 
+
 		// 支店別集計ファイル書き込み処理
 		if(!writeFile(args[0], FILE_NAME_BRANCH_OUT, branchNames, branchSales)) {
 			return;
@@ -68,8 +69,13 @@ public class CalculateSales {
 			// 一行ずつ読み込む
 			while((line = br.readLine()) != null) {
 				// ※ここの読み込み処理を変更してください。(処理内容1-2)
-				System.out.println(line);
+			String[] items=line.split(",");
+
+			branchNames.put(items[0], items[1]);
+		    branchSales.put(items[0],0L );
+			System.out.println(line);
 			}
+
 
 		} catch(IOException e) {
 			System.out.println(UNKNOWN_ERROR);
@@ -100,6 +106,12 @@ public class CalculateSales {
 	 */
 	private static boolean writeFile(String path, String fileName, Map<String, String> branchNames, Map<String, Long> branchSales) {
 		// ※ここに書き込み処理を作成してください。(処理内容3-1)
+		File[] files = new File("C:\\Users\trainee1314\\Desktop\\売上集計課題").listFiles(); 
+		for(int i = 0; i < files.length ; i++) { 
+			files[i].getName();
+		}
+		if(files.matches(正規表現構⽂))
+		
 
 		return true;
 	}
