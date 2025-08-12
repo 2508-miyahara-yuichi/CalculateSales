@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CalculateSales {
@@ -37,11 +39,25 @@ public class CalculateSales {
 		}
 
 		// ※ここから集計処理を作成してください。(処理内容2-1、2-2)
+		File[] files = new File("C:\\Users\trainee1314\\Desktop\\売上集計課題").listFiles();
+
+		List<File> rcdFiles = new ArrayList<>();
+
+		for(int i = 0; i < files.length ; i++) {
+			files[i].getName();
+			String fileName=files[i].getName();
+			if(fileName.matches("^[0-9]{8}[.]rcd$")) {
+			rcdFiles.add(files[i]);
+
+			}
+		}
+		for(int i = 0; i < rcdFiles.size(); i++) {
+
+
+		}
 
 
 
-
-		// 支店別集計ファイル書き込み処理
 		if(!writeFile(args[0], FILE_NAME_BRANCH_OUT, branchNames, branchSales)) {
 			return;
 		}
@@ -106,12 +122,7 @@ public class CalculateSales {
 	 */
 	private static boolean writeFile(String path, String fileName, Map<String, String> branchNames, Map<String, Long> branchSales) {
 		// ※ここに書き込み処理を作成してください。(処理内容3-1)
-		File[] files = new File("C:\\Users\trainee1314\\Desktop\\売上集計課題").listFiles(); 
-		for(int i = 0; i < files.length ; i++) { 
-			files[i].getName();
-		}
-		if(files.matches(正規表現構⽂))
-		
+
 
 		return true;
 	}
