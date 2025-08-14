@@ -1,8 +1,9 @@
 package jp.alhinc.calculate_sales;
-
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class CalculateSales {
+
+
 
 	// 支店定義ファイル名
 	private static final String FILE_NAME_BRANCH_LST = "branch.lst";
@@ -44,44 +47,67 @@ public class CalculateSales {
 		List<File> rcdFiles = new ArrayList<>();
 
 		for(int i = 0; i < files.length ; i++) {    //指定したパスに存在するすべてのファイルの数だけこの処理は繰り返す
+
 			files[i].getName();						//ファイル名の取得
-			String fileName=files[i].getName();		//取得したファイル名（i)をストリング型の変数fileNameに代入
+
+			String fileName = files[i].getName();		//取得したファイル名（i)をストリング型の変数fileNameに代入
+
 			if(fileName.matches("^[0-9]{8}[.]rcd$")) {		//０～９の8桁かつ末尾が.rcdのファイルを読み込むための条件
+
 			rcdFiles.add(files[i]);		//上記の条件に当てはまったもののみリストに追加
 
 			}
 		}
 		for(int i = 0; i < rcdFiles.size(); i++) {    //rcdファイルの数だけ処理を繰り返す
-			String pathName=rcdFiles.get(i).getName();	//rcdファイルのリストから名前を取り出す
+
+			String pathName = rcdFiles.get(i).getName();	//rcdファイルのリストから名前を取り出す
+
+			ArrayList<String> saleList = new ArrayList();	//リストに「０」支店コード「１」金額を格納する
+
+			String fileCode = null;	//支店コードを代入するための変数を宣言
 
 			BufferedReader br = null;
 
 			try {
-				File file = new File("C:\\Users\trainee1314\\Desktop\\売上集計課題", pathName);
-				FileReader fr =new FileReader(file);		//newFile("ファイルのパス",ファイルの名前の変数）
+				File file = new File("C:\\Users\\trainee1314\\Desktop\\売上集計課題\\", pathName);
+
+				FileReader fr = new FileReader(file);		//newFile("ファイルのパス",ファイルの名前の変数）
+
 				br = new BufferedReader(fr);
 
 				String line;			//String型の変数lineを宣言する
-				while((line = br.readLine()) != null) {	//一行ずつ読み込む
-					ArrayList<String> saleList = new ArrayList();	//リストに①支店コード②金額を格納する
-					saleList.add(line);			//変数line（String型）をsaleListに追加する
-					long fileSale = Long.parseLong(saleList.get(1));	//ストリング型のsaleListをlong型に変換
-					Long saleAmount = branchSales.get(0) + fileSale;	//マップに既にある数と読み込んだ数を足す
 
-				}
+				while((line = br.readLine()) != null) {	//一行ずつ読み込む
+
+				saleList.add(line);			//変数line（String型）をsaleListに追加する
+
+					}
+				fileCode = saleList.get(0);		//fileCodeに支店コードを代入する
+
+				long fileSale = Long.parseLong(saleList.get(1));	//ストリング型のsaleListをlong型に変換
+
+				Long saleAmount = branchSales.get(fileCode) + fileSale;	//マップに既にある数と読み込んだ数を足す
+
+				branchSales.put(fileCode,saleAmount); 	//合算したものをマップに戻す
 
 
 			}  catch(IOException e) {
+
 				System.out.println(UNKNOWN_ERROR);
+
 				return;
+
 			} finally {
 				// ファイルを開いている場合
 				if(br != null) {
 					try {
 						// ファイルを閉じる
 						br.close();
+
 					} catch(IOException e) {
+
 						System.out.println(UNKNOWN_ERROR);
+
 						return;
 					}
 				}
@@ -117,11 +143,15 @@ public class CalculateSales {
 	 * @return 読み込み可否
 	 */
 	private static boolean readFile(String path, String fileName, Map<String, String> branchNames, Map<String, Long> branchSales) {
+
 		BufferedReader br = null;
 
 		try {
+
 			File file = new File(path, fileName);
+
 			FileReader fr = new FileReader(file);
+
 			br = new BufferedReader(fr);
 
 			String line;
@@ -131,14 +161,19 @@ public class CalculateSales {
 			String[] items=line.split(",");
 
 			branchNames.put(items[0], items[1]);
+
 		    branchSales.put(items[0],0L );
+
 			System.out.println(line);
 			}
 
 
 		} catch(IOException e) {
+
 			System.out.println(UNKNOWN_ERROR);
+
 			return false;
+
 		} finally {
 			// ファイルを開いている場合
 			if(br != null) {
@@ -146,7 +181,9 @@ public class CalculateSales {
 					// ファイルを閉じる
 					br.close();
 				} catch(IOException e) {
+
 					System.out.println(UNKNOWN_ERROR);
+
 					return false;
 				}
 			}
@@ -165,6 +202,18 @@ public class CalculateSales {
 	 */
 	private static boolean writeFile(String path, String fileName, Map<String, String> branchNames, Map<String, Long> branchSales) {
 		// ※ここに書き込み処理を作成してください。(処理内容3-1)
+
+		File file = new File("C:\\Users\\trainee1314\\Desktop\\売上集計課題",ファイル名);
+
+		BufferedWriter br = null;
+
+		try {
+
+			File file = new File();
+
+			FileWriter fr = new FileWriter(file);
+
+			br = new BufferedWriter (fr);
 
 
 		return true;
