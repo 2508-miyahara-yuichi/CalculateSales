@@ -67,10 +67,10 @@ public class CalculateSales {
 				while((line = br.readLine()) != null) {	//一行ずつ読み込む
 					saleList.add(line);			//変数line（String型）をsaleListに追加する
 				}
-					fileCode = saleList.get(0);		//fileCodeに支店コードを代入する
-					long fileSale = Long.parseLong(saleList.get(1));	//ストリング型のsaleListをlong型に変換
-					Long saleAmount = branchSales.get(fileCode) + fileSale;	//マップに既にある数と読み込んだ数を足す
-					branchSales.put(fileCode, saleAmount); 	//合算したものをマップに戻す
+				fileCode = saleList.get(0);		//fileCodeに支店コードを代入する
+				long fileSale = Long.parseLong(saleList.get(1));	//ストリング型のsaleListをlong型に変換
+				Long saleAmount = branchSales.get(fileCode) + fileSale;	//マップに既にある数と読み込んだ数を足す
+				branchSales.put(fileCode, saleAmount); 	//合算したものをマップに戻す
 
 			}  catch(IOException e) {
 				System.out.println(UNKNOWN_ERROR);
@@ -123,7 +123,7 @@ public class CalculateSales {
 				// ※ここの読み込み処理を変更してください。(処理内容1-2)
 				String[] items=line.split(",");		//支店コードと支店名をそれぞれ別に保持するために文字列を分割する
 				branchNames.put(items[0], items[1]);	//items(配列）の「０」（支店コード）、「１」支店名を取り出してブランチネームのマップに追加する
-				branchSales.put(items[0],0L );		//「０」（支店コード）と売上金額（まだ売り上げがないため０）をブランチセールスのマップに追加する
+				branchSales.put(items[0], 0L );		//「０」（支店コード）と売上金額（まだ売り上げがないため０）をブランチセールスのマップに追加する
 
 			}
 
