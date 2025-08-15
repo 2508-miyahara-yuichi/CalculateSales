@@ -158,11 +158,11 @@ public class CalculateSales {
 			// 一行ずつ読み込む
 			while((line = br.readLine()) != null) {
 				// ※ここの読み込み処理を変更してください。(処理内容1-2)
-			String[] items=line.split(",");
+			String[] items=line.split(",");		//支店コードと支店名をそれぞれ別に保持するために文字列を分割する
 
-			branchNames.put(items[0], items[1]);
+			branchNames.put(items[0], items[1]);	//items(配列）の「０」（支店コード）、「１」支店名を取り出してブランチネームのマップに追加する
 
-		    branchSales.put(items[0],0L );
+		    branchSales.put(items[0],0L );		//「０」（支店コード）と売上金額（まだ売り上げがないため０）をブランチセールスのマップに追加する
 
 			System.out.println(line);
 			}
@@ -180,6 +180,7 @@ public class CalculateSales {
 				try {
 					// ファイルを閉じる
 					br.close();
+
 				} catch(IOException e) {
 
 					System.out.println(UNKNOWN_ERROR);
@@ -203,20 +204,56 @@ public class CalculateSales {
 	private static boolean writeFile(String path, String fileName, Map<String, String> branchNames, Map<String, Long> branchSales) {
 		// ※ここに書き込み処理を作成してください。(処理内容3-1)
 
-		File file = new File("C:\\Users\\trainee1314\\Desktop\\売上集計課題",ファイル名);
-
-		BufferedWriter br = null;
+		BufferedWriter bw = null;
 
 		try {
 
-			File file = new File();
+			File file = new File(path, fileName);	//ファイル作成/ファイル書き込みの処理
 
 			FileWriter fr = new FileWriter(file);
 
-			br = new BufferedWriter (fr);
+			bw = new BufferedWriter(fr);
+
+			for(String key : branchNames.keySet()) {	//キー（支店コード）を利用してバリュー（支店名・売上金額）を抽出する
+
+		    String saleNumbers = Long.toString(branchSales.get(key)); 	//branchSalesがlong型でwriteメソッドを使用できないため
+		    														    //branchSalesを変数に代入してString型に変換する
+		    	bw.write(key + ",");	//支店コード＋”,”
+
+				bw.write(branchNames.get(key) + ","); //支店名＋”,”
+
+				bw.write(saleNumbers);	//最後に売上金額を追加する
+
+				bw.newLine();
+
+			}
+
+		} catch(IOException e) {
+
+			System.out.println(UNKNOWN_ERROR);
+
+			return false;
+
+		} finally {
+			// ファイルを開いている場合
+			if(bw != null) {
+				try {
+					// ファイルを閉じる
+					bw.close();
+
+				} catch(IOException e) {
+
+					System.out.println(UNKNOWN_ERROR);
+
+					return false;
+				}
+			}
+		}
 
 
 		return true;
-	}
+
 
 }
+}
+
