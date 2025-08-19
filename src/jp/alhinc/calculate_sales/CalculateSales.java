@@ -58,7 +58,7 @@ public class CalculateSales {
 		for(int i = 0; i < files.length; i++) {    //指定したパスに存在するすべてのファイルの数だけこの処理は繰り返す
 			String fileName = files[i].getName();		//取得したファイル名（i)をストリング型の変数fileNameに代入
 
-			if((files[i].isFile()) && fileName.matches("^[0-9]{8}[.]rcd$")) {  //０～９の8桁かつ末尾が.rcdのファイルを読み込むための条件/売上ファイルかどうかの確認
+			if(files[i].isFile() && fileName.matches("^[0-9]{8}[.]rcd$")) {  //０～９の8桁かつ末尾が.rcdのファイルを読み込むための条件/売上ファイルかどうかの確認
 				rcdFiles.add(files[i]);		//上記の条件に当てはまったもののみリストに追加
 			}
 		}
@@ -100,7 +100,7 @@ public class CalculateSales {
 					return;
 				}
 
-				if(!saleList.get(1).matches("^[0-9]*$")) { //売上ファイルが数字か確認する
+				if(!saleList.get(1).matches("^[0-9]+$")) { //売上ファイルが数字か確認する
 					System.out.println(UNKNOWN_ERROR);
 					return;
 				}
@@ -253,10 +253,7 @@ public class CalculateSales {
 			}
 		}
 
-
 		return true;
-
-
 	}
 }
 
