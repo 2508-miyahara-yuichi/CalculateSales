@@ -25,6 +25,8 @@ public class CalculateSales {
 	private static final String FILE_INVALID_FORMAT = "支店定義ファイルのフォーマットが不正です";
 	private static final String FILE_NOT_CONTINUOUS = "売上ファイル名が連番になっていません";
 	private static final String FILE_AMOUNT_ECESSIVE = "合計⾦額が10桁を超えました";
+	private static final String FILE_FORMAT_FRAUD = "のフォーマットが不正です";
+	private static final String FILE_BRANCH_CODE_FRAUD =  "の支店コードが不正です";
 
 	/**
 	 * メインメソッド
@@ -36,6 +38,11 @@ public class CalculateSales {
 		Map<String, String> branchNames = new HashMap<>();
 		// 支店コードと売上金額を保持するMap
 		Map<String, Long> branchSales = new HashMap<>();
+
+		if (args.length != 1) {
+			System.out.println(UNKNOWN_ERROR);
+			return;
+		}
 
 		// 支店定義ファイル読み込み処理
 		if(!readFile(args[0], FILE_NAME_BRANCH_LST, branchNames, branchSales)) {
@@ -50,10 +57,21 @@ public class CalculateSales {
 		for(int i = 0; i < files.length; i++) {    //指定したパスに存在するすべてのファイルの数だけこの処理は繰り返す
 			String fileName = files[i].getName();		//取得したファイル名（i)をストリング型の変数fileNameに代入
 
-			if(fileName.matches("^[0-9]{8}[.]rcd$")) {		//０～９の8桁かつ末尾が.rcdのファイルを読み込むための条件
+			if((files[i].isFile()) && fileName.matches("^[0-9]{8}[.]rcd$")) {  //０～９の8桁かつ末尾が.rcdのファイルを読み込むための条件/売上ファイルかどうかの確認
 				rcdFiles.add(files[i]);		//上記の条件に当てはまったもののみリストに追加
-
+				return;
 			}
+		}
+
+		for(int i = 0; i < rcdFiles.size() -1; i++) { 					//売上ファイルが連番か確認する(比較する回数はリストの数よりｰ1）
+			int former = Integer.parseInt(rcdFiles.get(i).getName().substring(0, 8));	//ファイル名をint型に変換しつつ、ファイル名の8桁の数字を抽出する
+			int latter = Integer.parseInt(rcdFiles.get(i+1).getName().substring(0, 8)); 	//次のファイル名を（ファイル名＋１）で表現する
+
+			if((latter - former) != 1) {
+				System.out.println(FILE_NOT_CONTINUOUS);
+				return;
+			}
+
 		}
 		for(int i = 0; i < rcdFiles.size(); i++) {    //rcdファイルの数だけ処理を繰り返す
 			String rcdFileName = rcdFiles.get(i).getName();	//rcdファイルのリストから名前を取り出す
@@ -71,27 +89,29 @@ public class CalculateSales {
 				while((line = br.readLine()) != null) {	//一行ずつ読み込む
 					saleList.add(line);			//変数line（String型）をsaleListに追加する
 				}
-
-				for(int i1 = 0; i1 < saleList.size() -1; i1++) { 					//売上ファイルが連番か確認する(比較する回数はリストの数よりｰ1）
-					int former = Integer.parseInt(rcdFileName.substring(0, 8));	//ファイル名をint型に変換しつつ、ファイル名の8桁の数字を抽出する
-					int latter = Integer.parseInt((rcdFileName + 1).substring(0, 8)); 	//次のファイル名を（ファイル名＋１）で表現する
-
-					if((latter - former) != 1) {
-						System.out.println(FILE_NOT_CONTINUOUS);
-
-						return;
-					}
-
+				if(saleList.size() != 2) { //売上ファイルの中身が2行かどうか
+					System.out.println(rcdFileName + FILE_FORMAT_FRAUD);
+					return;
 				}
+
+			if(!branchNames.containsKey(saleList.get(0))) {  //支店コードが支店定義ファイルに存在しているか
+				System.out.println(rcdFileName + FILE_BRANCH_CODE_FRAUD);
+				return;
+			}
+
+			if(!saleList.get(1).matches("^[0-9]*$")) { //売上ファイルが数字か確認する
+				System.out.println(UNKNOWN_ERROR);
+				return;
+			}
+
 				fileCode = saleList.get(0);		//fileCodeに支店コードを代入する
 				long fileSale = Long.parseLong(saleList.get(1));	//ストリング型のsaleListをlong型に変換
 				Long saleAmount = branchSales.get(fileCode) + fileSale;	//マップに既にある数と読み込んだ数を足す
 
 				if(saleAmount >= 10000000000L){		//売上金額が10桁を超えていないか確認
 					System.out.println(FILE_AMOUNT_ECESSIVE);	 //エラーメッセージ出力
-
 					return;
-					}
+				}
 				branchSales.put(fileCode, saleAmount); 	//合算したものをマップに戻す
 
 			}  catch(IOException e) {
@@ -120,6 +140,9 @@ public class CalculateSales {
 			return;}
 
 	}
+
+
+
 
 	/**
 	 * 支店定義ファイル読み込み処理
